@@ -19,6 +19,16 @@ export interface Vehicle {
     updatedAt: string;
 }
 
+export interface PurchaseHistory {
+    id: string;
+    userId: string;
+    vehicleId: string;
+    quantity: number;
+    purchaseDate: string;
+    vehicle?: Vehicle;
+    user?: User;
+}
+
 export interface ApiResponse<T> {
     success: boolean;
     message: string;
