@@ -1,7 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+<<<<<<< HEAD
 
+=======
+>>>>>>> feature/auth
 :root {
   --text: #6b6375;
   --text-h: #08060d;
