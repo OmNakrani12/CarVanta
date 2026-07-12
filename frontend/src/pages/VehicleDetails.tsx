@@ -9,6 +9,7 @@ import { getBrandLogoUrl } from '../components/VehicleCard';
 export const VehicleDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const { data, isLoading, isError, refetch } = useQuery<ApiResponse<{ vehicle: Vehicle }>>({
     queryKey: ['vehicle', id],
     queryFn: async () => {
