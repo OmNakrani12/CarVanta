@@ -3,12 +3,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute, AdminRoute } from './routes/ProtectedRoute';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { VehicleDetails } from './pages/VehicleDetails';
+import { VehicleSearch } from './pages/VehicleSearch';
+import { MyPurchases } from './pages/MyPurchases';
 import { PurchaseVehicle } from './pages/PurchaseVehicle';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { RecentActivity } from './pages/RecentActivity';
 import { NotFound } from './pages/NotFound';
 
 // Instantiate TanStack Query Client
@@ -32,12 +36,19 @@ export const App: React.FC = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
+            {/* Protected Client Routes */}
+            <Route element={<ProtectedRoute />}>
               <Route path="/vehicles/:id" element={<VehicleDetails />} />
               <Route path="/vehicles/:id/purchase" element={<PurchaseVehicle />} />
+              <Route path="/search" element={<VehicleSearch />} />
+              <Route path="/purchases" element={<MyPurchases />} />
+              <Route path="/activity" element={<RecentActivity />} />
+            </Route>
 
-
+            {/* Protected Admin Routes */}
+            <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminDashboard />} />
-
+            </Route>
 
             {/* Fallback 404 Route */}
             <Route path="/404" element={<NotFound />} />
