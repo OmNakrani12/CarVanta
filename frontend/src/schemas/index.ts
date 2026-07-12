@@ -18,6 +18,28 @@ export const loginSchema = z.object({
 
 export type LoginInput = z.infer<typeof loginSchema>;
 
+export const vehicleSchema = z.object({
+  make: z.string().trim().min(1, 'Make is required'),
+  model: z.string().trim().min(1, 'Model is required'),
+  category: z.string().trim().min(1, 'Category is required'),
+  price: z.preprocess(
+    (val) => Number(val),
+    z.number().positive('Price must be greater than 0')
+  ),
+  quantity: z.preprocess(
+    (val) => Number(val),
+    z.number().int().nonnegative('Quantity must be 0 or more')
+  ),
+});
+export type VehicleInput = z.infer<typeof vehicleSchema>;
+
+export const restockSchema = z.object({
+  quantity: z.preprocess(
+    (val) => Number(val),
+    z.number().int().positive('Restock quantity must be greater than 0')
+  ),
+});
+export type RestockInput = z.infer<typeof restockSchema>;
 
 
 
