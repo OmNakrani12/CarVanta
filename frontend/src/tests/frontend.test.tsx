@@ -1,18 +1,19 @@
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { describe, it, expect, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup} from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext';
-import { Register } from '../pages/Register';
 import { Login } from '../pages/Login';
-
-
+import { Register } from '../pages/Register';
+import { Dashboard } from '../pages/Dashboard';
+import { VehicleCard } from '../components/VehicleCard';
+import { AdminDashboard } from '../pages/AdminDashboard';
 afterEach(() => {
-  cleanup();
-});
-
+  cleanup()
+})
+// Helper to render components wrapped in Providers
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
@@ -34,6 +35,7 @@ const renderWithProviders = (ui: React.ReactElement) => {
 };
 
 describe('Frontend Pages & Components', () => {
+  
   describe('Login Form Page', () => {
     it('renders input elements and validation errors', async () => {
       renderWithProviders(<Login />);
@@ -59,6 +61,7 @@ describe('Frontend Pages & Components', () => {
       });
     });
   });
+
   describe('Registration Form Page', () => {
     it('renders register input fields and triggers validations', async () => {
       renderWithProviders(<Register />);
@@ -84,4 +87,108 @@ describe('Frontend Pages & Components', () => {
       });
     });
   });
-})
+
+  describe('Vehicle Card Component', () => {
+    const dummyInStock = {
+      id: 'v-1',
+      make: 'Honda',
+      model: 'Civic',
+      category: 'Sedan',
+      price: 24000,
+      quantity: 5,
+      createdAt: '',
+      updatedAt: '',
+    };
+
+    const dummyOutOfStock = {
+      id: 'v-2',
+      make: 'Ford',
+      model: 'Mustang',
+      category: 'Sports',
+      price: 38000,
+      quantity: 0,
+      createdAt: '',
+      updatedAt: '',
+    };
+
+    it('renders vehicle specs and allows click action', () => {
+      const handlePurchase = vi.fn();
+      render(
+        <VehicleCard vehicle={dummyInStock} onPurchase={handlePurchase} />
+      );
+
+      expect(screen.getByText('Honda')).toBeInTheDocument();
+      expect(screen.getByText('Civic')).toBeInTheDocument();
+      expect(screen.getByText('Sedan')).toBeInTheDocument();
+      expect(screen.getByText('In Stock: 5')).toBeInTheDocument();
+
+      // Click card
+      fireEvent.click(screen.getByText('Civic'));
+      expect(handlePurchase).toHaveBeenCalledWith('v-1');
+    });
+
+    it('does not trigger click action when quantity is zero', () => {
+      const handlePurchase = vi.fn();
+      render(<VehicleCard vehicle={dummyOutOfStock} onPurchase={handlePurchase} />);
+
+      expect(screen.getByText('Sold Out')).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Mustang'));
+      expect(handlePurchase).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Dashboard Component Rendering', () => {
+    beforeEach(() => {
+      localStorage.setItem('user', JSON.stringify({ id: 'user-1', name: 'John Doe', email: 'john@example.com', role: 'USER' }));
+      localStorage.setItem('token', 'mock-token');
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('renders loaders first, then resolves and displays mock list of vehicles', async () => {
+      renderWithProviders(<Dashboard />);
+
+      // Confirm showroom catalog headers are present
+      expect(screen.getByText('All Vehicles')).toBeInTheDocument();
+      expect(screen.getByText('Browse our collection of quality vehicles')).toBeInTheDocument();
+
+      // Wait for mock server data to resolve and render cards
+      await waitFor(() => {
+        expect(screen.getAllByText('Toyota')[0]).toBeInTheDocument();
+        expect(screen.getByText('RAV4')).toBeInTheDocument();
+        expect(screen.getAllByText('Tesla')[0]).toBeInTheDocument();
+        expect(screen.getByText('Model 3')).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Admin Dashboard Panel Management', () => {
+    beforeEach(() => {
+      localStorage.setItem('user', JSON.stringify({ id: 'admin-1', name: 'Admin User', email: 'admin@example.com', role: 'ADMIN' }));
+      localStorage.setItem('token', 'mock-token');
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('renders inventory listing with manage actions', async () => {
+      renderWithProviders(<AdminDashboard />);
+
+      // Admin page titles and stats indicators
+      expect(screen.getByText('Admin Control Panel')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /add vehicle/i })).toBeInTheDocument();
+
+      // Wait for mock data
+      await waitFor(() => {
+        expect(screen.getAllByText(/Toyota/i)[0]).toBeInTheDocument();
+        // Since it's admin, they should have restock, edit, and delete action triggers in list
+        expect(screen.getAllByRole('button', { name: /restock/i })[0]).toBeInTheDocument();
+        expect(screen.getAllByRole('button', { name: /edit/i })[0]).toBeInTheDocument();
+        expect(screen.getAllByRole('button', { name: /delete/i })[0]).toBeInTheDocument();
+      });
+    });
+  });
+});

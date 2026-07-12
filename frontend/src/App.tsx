@@ -3,7 +3,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { ProtectedRoute, AdminRoute } from './routes/ProtectedRoute';
+import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { Dashboard } from './pages/Dashboard';
+import { VehicleDetails } from './pages/VehicleDetails';
+import { PurchaseVehicle } from './pages/PurchaseVehicle';
+import { AdminDashboard } from './pages/AdminDashboard';
 import { NotFound } from './pages/NotFound';
 
 // Instantiate TanStack Query Client
@@ -22,8 +28,23 @@ export const App: React.FC = () => {
       <AuthProvider>
         <Router>
           <Routes>
-            // register path
+            {/* Public Routes */}
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* Protected Client Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/vehicles/:id" element={<VehicleDetails />} />
+              <Route path="/vehicles/:id/purchase" element={<PurchaseVehicle />} />
+            </Route>
+
+            {/* Protected Admin Routes */}
+            <Route element={<AdminRoute />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
+
+            {/* Fallback 404 Route */}
             <Route path="/404" element={<NotFound />} />
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
