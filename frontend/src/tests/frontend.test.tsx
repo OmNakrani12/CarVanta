@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext';
 import { Register } from '../pages/Register';
+import { Login } from '../pages/Login';
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
@@ -27,6 +28,31 @@ const renderWithProviders = (ui: React.ReactElement) => {
 };
 
 describe('Frontend Pages & Components', () => {
+  describe('Login Form Page', () => {
+    it('renders input elements and validation errors', async () => {
+      renderWithProviders(<Login />);
+
+      // Verify page titles and login components
+      expect(screen.getByRole('heading', { name: /login/i })).toBeInTheDocument();
+      expect(screen.getByText('CarVanta Dealership Portal')).toBeInTheDocument();
+
+      const emailInput = screen.getByPlaceholderText('Enter your email');
+      const passwordInput = screen.getByPlaceholderText('Enter your password');
+      const submitButton = screen.getByRole('button', { name: /login/i });
+
+      expect(emailInput).toBeInTheDocument();
+      expect(passwordInput).toBeInTheDocument();
+      expect(submitButton).toBeInTheDocument();
+
+      // Trigger empty submission for validation errors
+      fireEvent.click(submitButton);
+
+      await waitFor(() => {
+        expect(screen.getByText('Must be a valid email address')).toBeInTheDocument();
+        expect(screen.getByText('Password is required')).toBeInTheDocument();
+      });
+    });
+  });
   describe('Registration Form Page', () => {
     it('renders register input fields and triggers validations', async () => {
       renderWithProviders(<Register />);

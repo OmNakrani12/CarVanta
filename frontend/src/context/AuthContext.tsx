@@ -1,13 +1,15 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import type { User, ApiResponse, AuthResponse } from '../types';
-import type { RegisterInput} from '../schemas';
+import type { LoginInput, RegisterInput } from '../schemas';
 import axiosClient from '../api/axiosClient';
 
 interface AuthContextType {
   user: User | null;
   token: string | null;
   loading: boolean;
+  login: (credentials: LoginInput) => Promise<void>;
   register: (data: RegisterInput) => Promise<void>;
+  logout: () => void;
   isAdmin: boolean;
 }
 
@@ -35,6 +37,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
+  const login = async (credentials: LoginInput) => {
+    setLoading(true);
+    try {
+      const response = await axiosClient.post<ApiResponse<{ token: string; user: User }>>(
+        '/auth/login',
+        credentials
+      );
+      const { token: receivedToken, user: receivedUser } = response.data.data;
+      
+      localStorage.setItem('token', receivedToken);
+      localStorage.setItem('user', JSON.stringify(receivedUser));
+      
+      setUser(receivedUser);
+      setToken(receivedToken);
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const register = async (data: RegisterInput) => {
     setLoading(true);
     try {
@@ -61,7 +84,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         token,
         loading,
+        login,
         register,
+        logout,
         isAdmin,
       }}
     >
