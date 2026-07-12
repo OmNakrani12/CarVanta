@@ -4,13 +4,17 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axiosClient from '../api/axiosClient';
 import type { Vehicle, ApiResponse } from '../types';
+import { VehicleCard } from '../components/VehicleCard';
+import { SkeletonLoader } from '../components/SkeletonLoader';
 import { vehicleSchema, restockSchema, type VehicleInput, type RestockInput } from '../schemas';
 import { toast } from 'react-hot-toast';
 import { 
   Shield, 
   Plus, 
   X, 
-  RefreshCcw,
+  RefreshCcw, 
+  LayoutGrid,
+  TableProperties,
   Car,
   DollarSign,
   ShoppingBag,
