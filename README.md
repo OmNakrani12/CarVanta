@@ -261,5 +261,5 @@ As part of our commitment to modern, efficient engineering, this project was dev
 
 ## 🚀 Deployed & Live Application
 
-*   **Live Web Portal (Vercel)**: **[https://CarVanta.vercel.app](https://car-vanta-showroom.vercel.app)** *(Optional - placeholder links for demo runs)*
-*   **Backend API Service (Render)**: **[https://car-vanta-backend.vercel.app/api/docs](https://car-vanta-backend.vercel.app/api/docs)**
+*   **Live Web Portal (Vercel)**: **[https://car-vanta.vercel.app](https://car-vanta.vercel.app)**
+*   **Backend API Service (Render)**: **[https://carvanta-dz78.onrender.com/api](https://carvanta-dz78.onrender.com/api)**
