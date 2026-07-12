@@ -1,12 +1,18 @@
 import React from 'react';
 import '@testing-library/jest-dom/vitest';
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../context/AuthContext';
 import { Register } from '../pages/Register';
 import { Login } from '../pages/Login';
+
+
+afterEach(() => {
+  cleanup();
+});
+
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
