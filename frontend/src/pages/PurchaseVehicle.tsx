@@ -67,7 +67,6 @@ export const PurchaseVehicle: React.FC = () => {
 
   const isOutOfStock = vehicle.quantity === 0;
 
-  // Indian Rupee currency format
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',

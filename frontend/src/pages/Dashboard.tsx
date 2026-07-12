@@ -21,7 +21,6 @@ import {
   List,
   Tag
 } from 'lucide-react';
-
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();

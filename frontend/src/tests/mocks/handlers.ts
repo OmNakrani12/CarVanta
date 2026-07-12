@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw';
 import type { Vehicle } from '../../types';
-
 const mockVehicles: Vehicle[] = [
   {
     id: 'vehicle-1',

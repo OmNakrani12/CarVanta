@@ -39,7 +39,6 @@ export const restockSchema = z.object({
     z.number().int().positive('Restock quantity must be greater than 0')
   ),
 });
-
 export type RestockInput = z.infer<typeof restockSchema>;
 
 

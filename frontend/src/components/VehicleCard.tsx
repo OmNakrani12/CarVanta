@@ -16,7 +16,7 @@ interface VehicleCardProps {
 export const getBrandLogoUrl = (make: string): string => {
   const norm = make.toLowerCase().trim();
   let filename = '';
-  
+
   if (norm.includes('toyota')) filename = 'toyota';
   else if (norm.includes('honda')) filename = 'honda';
   else if (norm.includes('audi')) filename = 'audi';
@@ -33,7 +33,6 @@ export const getBrandLogoUrl = (make: string): string => {
   else if (norm.includes('chevrolet')) filename = 'chevrolet';
   else if (norm.includes('nissan')) filename = 'nissan';
   else if (norm.includes('volkswagen') || norm.includes('vw')) filename = 'volkswagen';
-  
   if (filename) {
     // Return transparent background high-resolution logo png
     return `https://raw.githubusercontent.com/filippofilip95/car-logos-dataset/master/logos/thumb/${filename}.png`;
@@ -67,20 +66,19 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
   const logoUrl = getBrandLogoUrl(vehicle.make);
 
   return (
-    <div 
+    <div
       onClick={handleClick}
-      className={`bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden hover:shadow-[0_10px_30px_rgba(99,102,241,0.15)] hover:border-brand-500/40 transition-all duration-300 flex flex-col h-full group ${
-        !isAdminView ? 'cursor-pointer hover:-translate-y-1' : ''
-      }`}
+      className={`bg-white/[0.02] border border-white/10 rounded-2xl overflow-hidden hover:shadow-[0_10px_30px_rgba(99,102,241,0.15)] hover:border-brand-500/40 transition-all duration-300 flex flex-col h-full group ${!isAdminView ? 'cursor-pointer hover:-translate-y-1' : ''
+        }`}
     >
       {/* Visual Image Block (Solid Black with centered brand logo) */}
       <div className="h-52 w-full bg-black relative flex items-center justify-center overflow-hidden border-b border-white/5">
-        
+
         {/* Scaled brand logo centered on solid black background */}
         {logoUrl ? (
-          <img 
-            src={logoUrl} 
-            alt={vehicle.make} 
+          <img
+            src={logoUrl}
+            alt={vehicle.make}
             className="h-28 w-auto object-contain filter drop-shadow-[0_4px_12px_rgba(255,255,255,0.15)] transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
